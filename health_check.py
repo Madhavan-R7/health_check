@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import shutil
 import psutil
+import socket
 import os
 import sys
 
@@ -9,12 +10,16 @@ def check_cpu_usage():
     usage = psutil.cpu_percent(1)
     return usage > 80
 
-def check_disk_usage(dir, min_percents):
-     """Verifies that there's enough free space on disk"""
+def check_disk_usage(dir, min_percent):
+    """Verifies that there's enough free space on disk"""
     du = shutil.disk_usage(dir)
     du_free_percent = 100*du.free/du.total
-
     return du_free_percent > min_percent
+
+def check_localhost():
+    """check localhost is correctly configured on 127.0.0.1"""
+    localhost = socket.gethostbyname('localhost')
+    return localhost == '127.0.0.1'
 
 def main():
     if not check_disk_usage("/", 20):
@@ -22,6 +27,9 @@ def main():
         sys.exit(1)
     elif check_cpu_usage():
         print("ERROR! Please check your CPU usage and performance")
+        sys.exit(1)
+    elif not check_localhost():
+        print("ERROR! localhost cannot be resolved to 127.0.0.1")
         sys.exit(1)
     print("Everything OK!")
     sys.exit(0)
