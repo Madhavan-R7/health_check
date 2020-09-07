@@ -21,17 +21,24 @@ def check_localhost():
     localhost = socket.gethostbyname('localhost')
     return localhost == '127.0.0.1'
 
-def main():
-    if not check_disk_usage("/", 20):
-        print("ERROR! Please check your disk space")
-        sys.exit(1)
-    elif check_cpu_usage():
-        print("ERROR! Please check your CPU usage and performance")
-        sys.exit(1)
-    elif not check_localhost():
-        print("ERROR! localhost cannot be resolved to 127.0.0.1")
-        sys.exit(1)
-    print("Everything OK!")
-    sys.exit(0)
+if check_cpu_usage():
+    error_message = "CPU usage is over 80%"
+elif not check_disk_usage('/',20):
+    error_message = "Available disk space is less than 20%"
+elif not check_localhost():
+    error_message = "localhost cannot be resolved to 127.0.0.1"
+else:
+    pass
 
-main()
+# send email if any error reported
+if __name__ == "__main__":
+    try:
+        sender = "madhavan2rm@gmail.com"
+        receiver = "18s022@gmail.com"
+        subject = "Error - {}".format(error_message)
+        body = "Please check your system and resolve the issue as soon as possible"
+        message = generate_error_report(sender, receiver, subject, body)
+        send_email(message)
+    except NameError:
+        pass
+

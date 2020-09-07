@@ -27,14 +27,9 @@ def generate_email(sender, recipient, subject, body, attachment_path):
 
   return message
 
-def send_email(message):
-  """Sends the message to the configured SMTP server."""
-  mail_server = smtplib.SMTP('localhost')
-  mail_server.send_message(message)
-  mail_server.quit()
 
 def send_email(message):
   """Sends the message to the configured SMTP server."""
-  mail_server = smtplib.SMTP('localhost')
+  mail_server = smtplib.SMTP('smtp.gmail.com')
   mail_server.send_message(message)
   mail_server.quit()
