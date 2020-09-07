@@ -30,6 +30,12 @@ def generate_email(sender, recipient, subject, body, attachment_path):
 
 def send_email(message):
   """Sends the message to the configured SMTP server."""
-  mail_server = smtplib.SMTP('smtp.gmail.com')
+  mail_server = smtplib.SMTP_SSL('smtp.gmail.com')
+  sender = message['From']
+  password = os.environ.get('emauth')
+  try:
+    mail_server.login(sender, password)
+  except:
+    print("Can't send email")
   mail_server.send_message(message)
   mail_server.quit()
